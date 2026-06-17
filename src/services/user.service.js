@@ -1,12 +1,12 @@
 import { supabase } from "../config/supabase.js";
 import bcrypt from "bcrypt";
 
-// ==========================================
-// CREATE
-// ==========================================
-export const createUserInDB = async (userData) => {
-  const { name, email, password, role = "STUDENT" } = userData;
-
+export const createUserService = async ({
+  name,
+  email,
+  password,
+  role = "STUDENT",
+}) => {
   // Verificar si el email ya existe
   const { data: existingUser } = await supabase
     .from("users")
@@ -19,8 +19,7 @@ export const createUserInDB = async (userData) => {
   }
 
   // Hashear contraseña
-  const saltRounds = 10;
-  const password_hash = await bcrypt.hash(password, saltRounds);
+  const passwordHash = await bcrypt.hash(password, 10);
 
   // Insertar usuario
   const { data, error } = await supabase
@@ -28,51 +27,46 @@ export const createUserInDB = async (userData) => {
     .insert({
       name,
       email,
-      password_hash,
+      password_hash: passwordHash,
       role,
     })
     .select("id, name, email, role, created_at")
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
+
   return data;
 };
 
-// ==========================================
-// READ - Todos los usuarios
-// ==========================================
-export const getAllUsersFromDB = async () => {
+export const getAllUsersService = async () => {
   const { data, error } = await supabase
     .from("users")
     .select("id, name, email, role, created_at, updated_at")
     .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+    .order("id", { ascending: true });
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
+
   return data;
 };
 
-// ==========================================
-// READ - Solo alumnos
-// ==========================================
-export const getAllStudentsFromDB = async () => {
+export const getAllStudentsService = async () => {
   const { data, error } = await supabase
     .from("users")
     .select("id, name, email, role, created_at, updated_at")
     .eq("role", "STUDENT")
     .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+    .order("id", { ascending: true });
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
+
   return data;
 };
 
-// ==========================================
-// UPDATE
-// ==========================================
-export const updateUserInDB = async (id, updateData) => {
-  const { name, email, password, role } = updateData;
-
+export const updateUserService = async (
+  id,
+  { name, email, password, role }
+) => {
   // Verificar que el usuario existe
   const { data: existingUser } = await supabase
     .from("users")
@@ -81,28 +75,25 @@ export const updateUserInDB = async (id, updateData) => {
     .is("deleted_at", null)
     .single();
 
-  if (!existingUser) {
-    throw new Error("User not found");
-  }
+  if (!existingUser) return null;
 
   // Preparar datos a actualizar
-  const dataToUpdate = {};
-  if (name) dataToUpdate.name = name;
-  if (email) dataToUpdate.email = email;
-  if (role) dataToUpdate.role = role;
+  const updateData = {};
+  if (name) updateData.name = name;
+  if (email) updateData.email = email;
+  if (role) updateData.role = role;
 
   // Si se proporciona nueva contraseña, hashearla
   if (password) {
-    const saltRounds = 10;
-    dataToUpdate.password_hash = await bcrypt.hash(password, saltRounds);
+    updateData.password_hash = await bcrypt.hash(password, 10);
   }
 
-  // Si se actualiza el email, verificar que no exista
-  if (dataToUpdate.email) {
+  // Si se actualiza el email, verificar que no exista en otro usuario
+  if (updateData.email) {
     const { data: emailExists } = await supabase
       .from("users")
       .select("id")
-      .eq("email", dataToUpdate.email)
+      .eq("email", updateData.email)
       .neq("id", id)
       .single();
 
@@ -114,37 +105,27 @@ export const updateUserInDB = async (id, updateData) => {
   // Actualizar usuario
   const { data, error } = await supabase
     .from("users")
-    .update(dataToUpdate)
+    .update(updateData)
     .eq("id", id)
-    .select("id, name, email, role, created_at, updated_at")
+    .select("id, name, email, role, updated_at")
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
+
   return data;
 };
 
-// ==========================================
-// DELETE - Soft delete
-// ==========================================
-export const deleteUserFromDB = async (id) => {
-  // Verificar que el usuario existe
-  const { data: existingUser } = await supabase
-    .from("users")
-    .select("id")
-    .eq("id", id)
-    .is("deleted_at", null)
-    .single();
-
-  if (!existingUser) {
-    throw new Error("User not found");
-  }
-
-  // Soft delete
-  const { error } = await supabase
+export const deleteUserService = async (id) => {
+  // Soft delete: actualizar deleted_at
+  const { data, error } = await supabase
     .from("users")
     .update({ deleted_at: new Date().toISOString() })
-    .eq("id", id);
+    .eq("id", id)
+    .is("deleted_at", null)
+    .select("id")
+    .single();
 
-  if (error) throw error;
-  return true;
+  if (error) throw new Error(error.message);
+
+  return data;
 };
