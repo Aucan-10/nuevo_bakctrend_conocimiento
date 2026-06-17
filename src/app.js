@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
+import healthRoutes from "./routes/health.routes.js";
 // import usuarios from "./router/users";
 // import materias from "./router/materias";
 
@@ -13,7 +14,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // //Rutas
+app.use("/health", healthRoutes);
+app.use("/health", healthRoutes);
 // app.use("/users", usuarios);
 // app.use("/materias", materias);
 
-export default app;
+export default app; //Se exporta para que lo use el Index.js
