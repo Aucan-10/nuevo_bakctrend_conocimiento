@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import userRoutes from "./routes/user.routes.js";
 
 import healthRoutes from "./routes/health.routes.js";
 // import usuarios from "./router/users";
@@ -15,7 +16,7 @@ app.use(express.json());
 
 // //Rutas
 app.use("/health", healthRoutes);
-app.use("/health", healthRoutes);
+app.use("/api/user", userRoutes);
 // app.use("/users", usuarios);
 // app.use("/materias", materias);
 

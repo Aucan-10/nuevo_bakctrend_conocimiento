@@ -1,6 +1,35 @@
 @url=http://localhost:3000
+@user={{url}}/api/users
 
 GET {{url}}/health
 
 ###
-GET{{url}}/api/db
+GET {{url}}/api/db
+
+###
+POST {{user}}
+Content-Type: application/json
+
+{
+    "name": "jorge",
+    "email": "example@gmail.com",
+    "password": "contraseña1234",
+    "role": "STUDENT"
+}
+
+###
+GET {{user}}
+
+###
+GET {{user}}/students
+
+###
+PUT {{user}}/1
+Content-Type: application/json
+
+{
+    "name": "Jorge Actualizado"
+}
+
+###
+DELETE {{user}}/1
