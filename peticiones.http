@@ -1,29 +1,38 @@
 @url=http://localhost:3000
 @user={{url}}/api/users
 
-GET {{url}}/health
+#===================
+#    TEST USERS
+#===================
+
+# --- OK ---
+GET {{url}}/health 
 
 ###
 GET {{url}}/api/db
 
 ###
+# --- OK ---
 POST {{user}}
 Content-Type: application/json
 
 {
-    "name": "jorge",
-    "email": "example@gmail.com",
+    "name": "jormanuelge",
+    "email": "example2@gmail.com",
     "password": "contraseña1234",
     "role": "STUDENT"
 }
 
 ###
+# --- OK ---
 GET {{user}}
 
 ###
+# --- OK ---
 GET {{user}}/students
 
 ###
+# --- OK ---
 PUT {{user}}/1
 Content-Type: application/json
 
@@ -32,4 +41,19 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{user}}/1
+# --- OK ---
+DELETE {{user}}/2
+
+
+#==========================
+#       TEST MATERIAS
+# cualquiera puede acceder
+#==========================
+
+
+
+
+#===========================
+#       TEST MATERIAS
+# solo usuarios habilitados
+#===========================

@@ -16,7 +16,8 @@ app.use(express.json());
 
 // //Rutas
 app.use("/health", healthRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 // app.use("/users", usuarios);
 // app.use("/materias", materias);
 
