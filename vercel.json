@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "forest": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "...",
+    "cors": "...",
+    "express": "...",
+    "morgan": "...",
+    "dotenv": "..."
+  }
+}
