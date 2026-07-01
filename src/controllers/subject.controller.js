@@ -4,6 +4,8 @@ import {
   getSubjectsByProfessorService,
   getProfessorBySubjectService,
   getSubjectsByStudentService,
+  getStudentsBySubjectService,
+  getAllSubjectsWithDetailsService,
   updateSubjectService,
   deleteSubjectService,
 } from "../services/subject.service.js";
@@ -148,5 +150,49 @@ export const getSubjectsByStudent = async (req, res) => {
     res.status(500).json({
       message: error.message,
     });
+  }
+};
+
+export const getSubjectFull = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const subject = await getSubjectFullService(id);
+
+    if (!subject) {
+      return res.status(404).json({
+        message: "Subject not found",
+      });
+    }
+
+    res.status(200).json(subject);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const getStudentsBySubject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const students = await getStudentsBySubjectService(id);
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+export const getAllSubjectsWithDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const subject = await getAllSubjectsWithDetailsService(id);
+
+    if (!subject) {
+      return res.status(404).json({ message: "Subject not found" });
+    }
+
+    res.status(200).json(subject);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

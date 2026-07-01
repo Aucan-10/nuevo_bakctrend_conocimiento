@@ -189,3 +189,84 @@ export const getSubjectsByStudentService = async (student_id) => {
 
   return data;
 };
+
+// NUEVA FUNCIÓN: Obtener estudiantes de una materia
+export const getStudentsBySubjectService = async (subject_id) => {
+  // Verificar que la materia existe
+  const { data: subject } = await supabase
+    .from("subjects")
+    .select("id")
+    .eq("id", subject_id)
+    .is("deleted_at", null)
+    .maybeSingle();
+
+  if (!subject) {
+    return [];
+  }
+
+  // Obtener las inscripciones con datos del estudiante
+  const { data, error } = await supabase
+    .from("enrollments")
+    .select("id, grade, created_at, users:student_id(id, name, email, role)")
+    .eq("subject_id", subject_id)
+    .is("deleted_at", null);
+
+  if (error) throw new Error(error.message);
+
+  // Transformar la respuesta
+  return data.map((enrollment) => ({
+    enrollment_id: enrollment.id,
+    grade: enrollment.grade,
+    enrolled_at: enrollment.created_at,
+    student: enrollment.users,
+  }));
+};
+
+// NUEVA FUNCIÓN: Obtener materia completa con profesor y estudiantes
+export const getAllSubjectsWithDetailsService = async (subject_id) => {
+  // 1. Obtener la materia
+  const { data: subject, error: subjectError } = await supabase
+    .from("subjects")
+    .select("id, name, description, professor_id, created_at, updated_at")
+    .eq("id", subject_id)
+    .is("deleted_at", null)
+    .maybeSingle();
+
+  if (subjectError) throw new Error(subjectError.message);
+  if (!subject) return null;
+
+  // 2. Obtener el profesor (si tiene)
+  let professor = null;
+  if (subject.professor_id) {
+    const { data: profData } = await supabase
+      .from("users")
+      .select("id, name, email, role")
+      .eq("id", subject.professor_id)
+      .is("deleted_at", null)
+      .maybeSingle();
+    professor = profData;
+  }
+
+  // 3. Obtener los estudiantes inscriptos con sus notas
+  const { data: enrollments, error: enrollError } = await supabase
+    .from("enrollments")
+    .select("id, grade, created_at, users:student_id(id, name, email, role)")
+    .eq("subject_id", subject_id)
+    .is("deleted_at", null);
+
+  if (enrollError) throw new Error(enrollError.message);
+
+  // 4. Armar la respuesta completa
+  return {
+    ...subject,
+    professor,
+    students: enrollments
+      ? enrollments.map((e) => ({
+          enrollment_id: e.id,
+          grade: e.grade,
+          enrolled_at: e.created_at,
+          student: e.users,
+        }))
+      : [],
+  };
+};

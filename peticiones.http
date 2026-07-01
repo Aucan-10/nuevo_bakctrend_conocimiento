@@ -1,5 +1,8 @@
 @url=http://localhost:3000
 @user={{url}}/api/users
+@subject={{url}}/api/subjects
+
+# Reemplazar "url" por "[nombre]-rmib.vercel.app" de Vercel
 
 #===================
 #    TEST USERS
@@ -17,10 +20,10 @@ POST {{user}}
 Content-Type: application/json
 
 {
-    "name": "jormanuelge",
-    "email": "example2@gmail.com",
-    "password": "contraseña1234",
-    "role": "STUDENT"
+    "name": "chad",
+    "email": "chad@gmail.com",
+    "password": "amado",
+    "role": "PROFESSOR"
 }
 
 ###
@@ -47,10 +50,7 @@ DELETE {{user}}/2
 
 #==========================
 #       TEST MATERIAS
-# cualquiera puede acceder
 #==========================
-
-@subject={{url}}/api/subjects
 
 ### Crear materia
 # --- OK ---
@@ -58,11 +58,9 @@ POST {{subject}}
 Content-Type: application/json
 
 {
-    "name": "Matemáticas",
-    "email": "ejemplomateriatest@gamil.com",
-    "description": "Álgebra y cálculo básico",
-    "password": "1234",
-    "professor_id": 1
+    "name": "Organizacion y Arquitectura II",
+    "description": "Funcionamiento interno de procesadores, cache y ram",
+    "professor_id": 7
 }
 
 ### Obtener todas las materias
@@ -71,7 +69,7 @@ GET {{subject}}
 
 ### Actualizar materia
 # --- OK ---
-PUT {{subject}}/5
+PUT {{subject}}/1
 Content-Type: application/json
 
 {
@@ -81,16 +79,105 @@ Content-Type: application/json
 
 ### Eliminar materia
 # --- OK ---
-DELETE {{subject}}/5
+DELETE {{subject}}/1
+
+### Crear nueva materia
+# --- OK ---
+POST {{subject}}
+Content-Type: application/json
+
+{
+    "name": "Física",
+    "description": "Mecánica y termodinámica",
+    "professor_id": 7
+}
 
 
 #======================================
-#       TEST MATERIAS
-# profesor-materia-alumno y relaciones
+#   TEST RELACIONES
+# profesor-materia-alumno
 #======================================
 
 ### Obtener materias de un profesor específico
-GET {{}}
+# --- OK ---
+GET {{subject}}/professor/1
 
-### Obtener profesores de una materia específica
-GET {{}}
+### Obtener profesor de una materia específica
+# --- OK ---
+GET {{subject}}/1/professor
+
+### Obtener materias de un alumno específico
+# --- OK ---
+GET {{subject}}/student/3
+
+### Obtener materia completa (con profesor y estudiantes inscriptos)
+# --- PENDIENTE: requiere implementar ---
+GET {{subject}}/1/full
+
+### Inscribir alumno en materia (necesitarás esta ruta también)
+POST http://localhost:3000/api/enrollments
+Content-Type: application/json
+
+{
+    "student_id": 2,
+    "subject_id": 1
+}
+
+export const getStudentsBySubjectService = async (subject_id) => {
+  // Verificar que la materia existe
+  const subjectResult = await query(
+    `SELECT id FROM subjects WHERE id = $1 AND deleted_at IS NULL`,
+    [subject_id]
+  );
+
+  if (subjectResult.rows.length === 0) {
+    return [];
+  }
+
+  const result = await query(
+    `SELECT e.id as enrollment_id, e.grade, e.created_at as enrolled_at,
+            u.id, u.name, u.email, u.role
+     FROM enrollments e
+     INNER JOIN users u ON e.student_id = u.id AND u.deleted_at IS NULL
+     WHERE e.subject_id = $1 AND e.deleted_at IS NULL`,
+    [subject_id]
+  );
+
+  return result.rows;
+};
+
+#==========================
+#       TEST ENROLLMENTS
+#==========================
+
+### Inscribir alumno en materia
+POST {{url}}/api/enrollments
+Content-Type: application/json
+
+{
+    "student_id": 3,
+    "subject_id": 1
+}
+
+### Obtener todas las inscripciones
+GET {{url}}/api/enrollments
+
+### Obtener inscripción específica
+GET {{url}}/api/enrollments/1
+
+### Obtener inscripciones de un alumno
+GET {{url}}/api/enrollments/student/2
+
+### Obtener inscripciones de una materia
+GET {{url}}/api/enrollments/subject/1
+
+### Actualizar nota de una inscripción
+PUT {{url}}/api/enrollments/1
+Content-Type: application/json
+
+{
+    "grade": 9.5
+}
+
+### Eliminar inscripción (soft delete)
+DELETE {{url}}/api/enrollments/1
