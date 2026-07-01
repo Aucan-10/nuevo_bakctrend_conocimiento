@@ -29,4 +29,21 @@ app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 
+// Ruta raíz de bienvenida
+app.get("/", (req, res) => {
+  res.json({
+    message: "🚀 Backtrend API - Proyecto de Construcción de Software",
+    version: "1.0.0",
+    author: "Aucan Russo",
+    documentation: "/api-docs",
+    endpoints: {
+      health: "/health",
+      users: "/api/users",
+      subjects: "/api/subjects",
+      enrollments: "/api/enrollments",
+    },
+    deployed: "Vercel",
+  });
+});
+
 export default app;
