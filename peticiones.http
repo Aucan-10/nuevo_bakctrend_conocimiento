@@ -50,10 +50,47 @@ DELETE {{user}}/2
 # cualquiera puede acceder
 #==========================
 
+@subject={{url}}/api/subjects
+
+### Crear materia
+# --- OK ---
+POST {{subject}}
+Content-Type: application/json
+
+{
+    "name": "Matemáticas",
+    "email": "ejemplomateriatest@gamil.com",
+    "description": "Álgebra y cálculo básico",
+    "password": "1234",
+    "professor_id": 1
+}
+
+### Obtener todas las materias
+# --- OK ---
+GET {{subject}}
+
+### Actualizar materia
+# --- OK ---
+PUT {{subject}}/5
+Content-Type: application/json
+
+{
+    "name": "Matemáticas Avanzadas",
+    "description": "Cálculo integral y diferencial"
+}
+
+### Eliminar materia
+# --- OK ---
+DELETE {{subject}}/5
 
 
-
-#===========================
+#======================================
 #       TEST MATERIAS
-# solo usuarios habilitados
-#===========================
+# profesor-materia-alumno y relaciones
+#======================================
+
+### Obtener materias de un profesor específico
+GET {{}}
+
+### Obtener profesores de una materia específica
+GET {{}}
