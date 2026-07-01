@@ -1,15 +1,15 @@
 {
-  "type": "module",
-  "scripts": {
-    "dev": "node --watch src/index.js",
-    "start": "node src/index.js",
-    "forest": "node --watch src/index.js"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "...",
-    "cors": "...",
-    "express": "...",
-    "morgan": "...",
-    "dotenv": "..."
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/index.js"
+    }
+  ]
 }
