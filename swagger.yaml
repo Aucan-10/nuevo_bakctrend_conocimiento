@@ -5,21 +5,379 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:3000
+    description: Development server
+  - url: https://nuevo-bakctrend-conocimiento.vercel.app
+    description: Production server (Vercel)
+
 paths:
+  # ==================== HEALTH ====================
   /health:
     get:
       summary: Check API health
+      tags:
+        - Health
       responses:
-        '200':
+        "200":
           description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+
+  # ==================== USERS ====================
   /api/users:
     get:
       summary: Get all users
+      tags:
+        - Users
       responses:
-        '200':
-          description: A list of users
+        "200":
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
     post:
       summary: Create a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+
+  /api/users/students:
+    get:
+      summary: Get all students
+      tags:
+        - Users
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /api/users/professor:
+    get:
+      summary: Get all professors
+      tags:
+        - Users
+      responses:
+        "200":
+          description: List of professors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /api/users/{id}:
+    put:
+      summary: Update a user
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: User updated successfully
+        "404":
+          description: User not found
+
+    delete:
+      summary: Delete a user (soft delete)
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User deleted successfully
+        "404":
+          description: User not found
+
+  # ==================== SUBJECTS ====================
+  /api/subjects:
+    get:
+      summary: Get all subjects
+      tags:
+        - Subjects
+      responses:
+        "200":
+          description: List of all subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subject"
+
+    post:
+      summary: Create a new subject
+      tags:
+        - Subjects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectInput"
+      responses:
+        "201":
+          description: Subject created successfully
+        "400":
+          description: Invalid input
+        "404":
+          description: Professor not found
+
+  /api/subjects/professor/{id}:
+    get:
+      summary: Get subjects by professor
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of subjects taught by professor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subject"
+
+  /api/subjects/student/{id}:
+    get:
+      summary: Get subjects by student
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of subjects enrolled by student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subject"
+
+  /api/subjects/{id}/students:
+    get:
+      summary: Get students enrolled in a subject
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of students enrolled in the subject
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnrollmentWithStudent"
+
+  /api/subjects/{id}/professor:
+    get:
+      summary: Get professor of a subject
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Professor of the subject
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Subject not found or has no professor
+
+  /api/subjects/{id}/full:
+    get:
+      summary: Get subject with full details (professor and students)
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Subject with professor and enrolled students
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectFull"
+        "404":
+          description: Subject not found
+
+  /api/subjects/{id}:
+    put:
+      summary: Update a subject
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectUpdate"
+      responses:
+        "200":
+          description: Subject updated successfully
+        "404":
+          description: Subject not found
+
+    delete:
+      summary: Delete a subject (soft delete)
+      tags:
+        - Subjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Subject deleted successfully
+        "404":
+          description: Subject not found
+
+  # ==================== ENROLLMENTS ====================
+  /api/enrollments:
+    get:
+      summary: Get all enrollments
+      tags:
+        - Enrollments
+      responses:
+        "200":
+          description: List of all enrollments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnrollmentFull"
+
+    post:
+      summary: Enroll a student in a subject
+      tags:
+        - Enrollments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentInput"
+      responses:
+        "201":
+          description: Enrollment created successfully
+        "400":
+          description: Invalid input or user is not a student
+        "404":
+          description: Student or subject not found
+        "409":
+          description: Student already enrolled
+
+  /api/enrollments/{id}:
+    get:
+      summary: Get enrollment by ID
+      tags:
+        - Enrollments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Enrollment details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnrollmentFull"
+        "404":
+          description: Enrollment not found
+
+    put:
+      summary: Update enrollment grade
+      tags:
+        - Enrollments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -27,14 +385,275 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                role:
-                  type: string
+                grade:
+                  type: number
+                  format: float
+                  example: 9.5
       responses:
-        '201':
-          description: User created successfully
+        "200":
+          description: Grade updated successfully
+        "404":
+          description: Enrollment not found
+
+    delete:
+      summary: Delete enrollment (soft delete)
+      tags:
+        - Enrollments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Enrollment deleted successfully
+        "404":
+          description: Enrollment not found
+
+  /api/enrollments/student/{id}:
+    get:
+      summary: Get enrollments by student
+      tags:
+        - Enrollments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of student's enrollments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnrollmentWithSubject"
+
+  /api/enrollments/subject/{id}:
+    get:
+      summary: Get enrollments by subject
+      tags:
+        - Enrollments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of enrollments for the subject
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnrollmentWithStudent"
+
+# ==================== COMPONENTS ====================
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [STUDENT, PROFESSOR, ADMIN]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserInput:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [STUDENT, PROFESSOR, ADMIN]
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [STUDENT, PROFESSOR, ADMIN]
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        professor_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    SubjectInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        professor_id:
+          type: integer
+
+    SubjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        professor_id:
+          type: integer
+
+    SubjectFull:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        professor_id:
+          type: integer
+        professor:
+          $ref: "#/components/schemas/User"
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnrollmentWithStudent"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+        student_id:
+          type: integer
+        subject_id:
+          type: integer
+        grade:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    EnrollmentInput:
+      type: object
+      required:
+        - student_id
+        - subject_id
+      properties:
+        student_id:
+          type: integer
+        subject_id:
+          type: integer
+
+    EnrollmentWithStudent:
+      type: object
+      properties:
+        enrollment_id:
+          type: integer
+        grade:
+          type: number
+          format: float
+        enrolled_at:
+          type: string
+          format: date-time
+        student:
+          $ref: "#/components/schemas/User"
+
+    EnrollmentWithSubject:
+      type: object
+      properties:
+        id:
+          type: integer
+        subject_id:
+          type: integer
+        grade:
+          type: number
+          format: float
+        subjects:
+          $ref: "#/components/schemas/Subject"
+
+    EnrollmentFull:
+      type: object
+      properties:
+        id:
+          type: integer
+        student_id:
+          type: integer
+        subject_id:
+          type: integer
+        grade:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        users:
+          $ref: "#/components/schemas/User"
+        subjects:
+          $ref: "#/components/schemas/Subject"
+
+  tags:
+    - name: Health
+      description: Health check endpoints
+    - name: Users
+      description: User management
+    - name: Subjects
+      description: Subject management
+    - name: Enrollments
+      description: Enrollment management
