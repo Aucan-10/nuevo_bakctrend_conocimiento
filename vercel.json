@@ -1,7 +1,5 @@
 {
-  "version": 2,
-  "builds": [{ "src": "src/index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/src/index.js" }],
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index.js" }],
   "functions": {
     "api/index.js": {
       "includeFiles": "api/swagger.yaml"
