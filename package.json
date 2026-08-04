@@ -2,12 +2,12 @@
   "name": "backtrend",
   "version": "1.0.0",
   "description": "hacer un back sin morir en el intento y sin IA",
-  "main": "src/index.js",
+  "main": "api/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "forest": "node --watch src/index.js",
-    "start": "node src/index.js"
+    "forest": "node --watch api/index.js",
+    "start": "node api/index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.0",
