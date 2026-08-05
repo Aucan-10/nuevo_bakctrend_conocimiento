@@ -1,6 +1,5 @@
 import app from "./app.js";
 
-// Exportar para Vercel
 export default app;
 
 // Solo escuchar puerto en desarrollo local
