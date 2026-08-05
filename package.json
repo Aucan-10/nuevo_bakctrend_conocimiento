@@ -2,11 +2,11 @@
   "name": "backtrend",
   "version": "1.0.0",
   "description": "hacer un back sin morir en el intento y sin IA",
-  "main": "api/index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "forest": "node --watch dev.js",
-    "start": "node dev.js"
+    "start": "node src/index.js",
+    "forest": "node --watch src/index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.0",
@@ -16,8 +16,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0"
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "author": "Aucan",
   "license": "ISC"
