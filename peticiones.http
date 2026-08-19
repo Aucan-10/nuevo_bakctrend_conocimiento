@@ -20,9 +20,9 @@ POST {{user}}
 Content-Type: application/json
 
 {
-    "name": "chad",
-    "email": "chad@gmail.com",
-    "password": "amado",
+    "name": "chigga",
+    "email": "chsad@gmail.com",
+    "password": "toilet",
     "role": "PROFESSOR"
 }
 

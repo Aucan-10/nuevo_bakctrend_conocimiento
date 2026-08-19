@@ -27,8 +27,7 @@ const options = {
       },
     ],
   },
-  // Esto garantiza que Vercel encuentre tus archivos de rutas sin importar desde dónde ejecute
-  apis: [path.join(__dirname, "routes/*.js")],
+  apis: ["./src/routes/*.js"],
 };
 
 export default swaggerJSDoc(options);
