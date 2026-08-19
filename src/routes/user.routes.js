@@ -1,4 +1,3 @@
-// src/routes/user.routes.js
 import { Router } from "express";
 import {
   createUser,
@@ -7,8 +6,12 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/user.controller.js";
+import { checkToken } from "../security/auth.middleware.js";
 
 const router = Router();
+
+// Aplica el middleware `checkToken` a todas las rutas protegidas
+router.use(checkToken);
 
 /**
  * @swagger
