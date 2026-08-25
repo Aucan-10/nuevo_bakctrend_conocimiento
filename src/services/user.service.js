@@ -129,3 +129,16 @@ export const deleteUserService = async (id) => {
 
   return data;
 };
+
+export const findUserByEmailService = async (email) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, name, email, password_hash, role")
+    .eq("email", email)
+    .is("deleted_at", null)
+    .single();
+
+  if (error) return null;
+
+  return data;
+};

@@ -7,12 +7,12 @@ export const checkToken = (req, res, next) => {
     return res.status(401).json({ message: "Token is required" });
   }
 
-  const token = authHeader.split(" ")[1]; // Asume formato "Bearer <token>"
+  const token = authHeader.split(" ")[1];
 
   try {
     const payload = verifyToken(token);
-    req.user = payload; // Agrega el payload desencriptado a la solicitud
-    next(); // Llama al siguiente middleware o controlador
+    req.user = payload;
+    next();
   } catch (error) {
     res.status(401).json({ message: "Invalid or expired token" });
   }

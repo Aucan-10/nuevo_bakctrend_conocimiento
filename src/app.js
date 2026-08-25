@@ -7,6 +7,7 @@ import enrollmentRoutes from "./routes/enrollment.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Configurar Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.use("/auth", authRoutes);
 app.use("/health", healthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectRoutes);
