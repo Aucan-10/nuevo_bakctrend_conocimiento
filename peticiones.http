@@ -29,10 +29,10 @@ POST {{url}}/auth/register
 Content-Type: application/json
 
 {
-    "name": "Prof Test",
-    "email": "prof@test.com",
+    "name": "Profesor Test",
+    "email": "proasf@test.com",
     "password": "1234",
-    "role": "PROFESSOR"
+    "role": "STUDENT"
 }
 
 ### Registrar un alumno
@@ -42,7 +42,7 @@ Content-Type: application/json
 
 {
     "name": "Alu Test",
-    "email": "alu@test.com",
+    "email": "aluMN@test.com",
     "password": "1234"
 }
 
@@ -62,24 +62,24 @@ Content-Type: application/json
 
 ### Obtener todos los usuarios (requiere cualquier token válido)
 GET {{user}}
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 ### Obtener solo estudiantes
 GET {{user}}/students
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 ### Actualizar un usuario (reemplazar el :id por uno real)
 PUT {{user}}/1
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 Content-Type: application/json
 
 {
-    "name": "Jorge Actualizado"
+    "name": "Jorge"
 }
 
 ### Eliminar un usuario (soft delete, reemplazar el :id)
 DELETE {{user}}/2
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 #==========================
 #       TEST MATERIAS
@@ -105,7 +105,7 @@ Content-Type: application/json
 ### Crear materia con token de PROFESOR -> esperado 201
 # Reemplazar professor_id por el id real devuelto en el registro del profesor
 POST {{subject}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MTk3NTYsImV4cCI6MTc4NzcyMzM1Nn0.V24HwsVaL4WGy8dsiKppVxwmWwYuuuExC8Z_cwxogYs
 Content-Type: application/json
 
 {
@@ -138,19 +138,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiO
 
 ### Materias de un profesor específico
 GET {{subject}}/professor/1
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 ### Profesor de una materia específica
 GET {{subject}}/1/professor
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 ### Materias de un alumno específico
 GET {{subject}}/student/2
-Authorization: Bearer {{tokenAlu}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzg3NzAxMjQ3LCJleHAiOjE3ODc3MDQ4NDd9.vnIgxZOeX1-DxoZvu-k2jf1JQwBfZ0yhGMA1uTlkOto
 
 ### Materia completa (con profesor y estudiantes inscriptos)
 GET {{subject}}/1/full
-Authorization: Bearer {{tokenProf}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 #==========================
 #       TEST ENROLLMENTS
@@ -158,12 +158,14 @@ Authorization: Bearer {{tokenProf}}
 
 ### Inscribir alumno en materia
 # Reemplazar student_id/subject_id por ids reales
+### Inscribir alumno en materia (solo profesor)
 POST {{enrollment}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MTk3NTYsImV4cCI6MTc4NzcyMzM1Nn0.V24HwsVaL4WGy8dsiKppVxwmWwYuuuExC8Z_cwxogYs
 Content-Type: application/json
 
 {
-    "student_id": 2,
-    "subject_id": 1
+    "student_id": 14,
+    "subject_id": 6
 }
 
 ### Obtener todas las inscripciones
@@ -178,13 +180,22 @@ GET {{enrollment}}/student/2
 ### Obtener inscripciones de una materia
 GET {{enrollment}}/subject/1
 
-### Actualizar nota de una inscripción
-PUT {{enrollment}}/1
-Content-Type: application/json
+# ### Actualizar nota de una inscripción
+# PUT {{enrollment}}/1
+# Content-Type: application/json
 
-{
-    "grade": 9.5
-}
+# {
+#     "grade": 9.5
+# }
 
 ### Eliminar inscripción (soft delete)
 DELETE {{enrollment}}/1
+
+### Probar rate limit de auth (mandar 11 veces seguidas)
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "prof@test.com",
+    "password": "1234"
+}

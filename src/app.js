@@ -8,6 +8,7 @@ import healthRoutes from "./routes/health.routes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger.js";
 import authRoutes from "./routes/auth.routes.js";
+import { generalLimiter, authLimiter } from "./security/rateLimiter.js"; // <-- nuevo
 
 const app = express();
 
@@ -15,10 +16,11 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Configurar Swagger
+app.use(generalLimiter); // <-- nuevo: aplica a toda la app
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use("/auth", authRoutes);
+app.use("/auth", authLimiter, authRoutes); // <-- nuevo: límite extra para auth
 app.use("/health", healthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/subjects", subjectRoutes);
