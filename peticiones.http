@@ -1,75 +1,126 @@
-@url=http://localhost:3000
-@user={{url}}/api/users
-@subject={{url}}/api/subjects
+@url = http://localhost:3000
+@user = {{url}}/api/users
+@subject = {{url}}/api/subjects
+@enrollment = {{url}}/api/enrollments
 
-# Reemplazar "url" por "[nombre]-rmib.vercel.app" de Vercel
+# Reemplazar "url" por "[nombre]-rmib.vercel.app" de Vercel una vez deployado
+
+# IMPORTANTE: después de correr "Registrar profesor" y "Registrar alumno",
+# copiá el "token" de cada respuesta y pegalo abajo en @tokenProf / @tokenAlu.
+# El REST Client no encadena respuestas automáticamente, así que este paso
+# manual es necesario cada vez que reiniciás la DB o cambian los usuarios.
+@tokenProf = PEGAR_TOKEN_DEL_PROFESOR_ACA
+@tokenAlu = PEGAR_TOKEN_DEL_ALUMNO_ACA
+
+#===================
+#    HEALTH / DB
+#===================
+
+### Chequeo de salud del servidor
+GET {{url}}/health
+
+#===================
+#    AUTH
+#===================
+
+### Registrar un profesor
+# Esperado: 201 con user + token. Copiar el token en @tokenProf arriba.
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+    "name": "Prof Test",
+    "email": "prof@test.com",
+    "password": "1234",
+    "role": "PROFESSOR"
+}
+
+### Registrar un alumno
+# Esperado: 201 con user + token (role default STUDENT). Copiar en @tokenAlu.
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+    "name": "Alu Test",
+    "email": "alu@test.com",
+    "password": "1234"
+}
+
+### Login como profesor
+# Esperado: 201, mismo tipo de respuesta que register.
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "prof@test.com",
+    "password": "1234"
+}
 
 #===================
 #    TEST USERS
 #===================
 
-# --- OK ---
-GET {{url}}/health 
-
-###
-GET {{url}}/api/db
-
-###
-# --- OK ---
-POST {{user}}
-Content-Type: application/json
-
-{
-    "name": "chigga",
-    "email": "chsad@gmail.com",
-    "password": "toilet",
-    "role": "PROFESSOR"
-}
-
-###
-# --- OK ---
+### Obtener todos los usuarios (requiere cualquier token válido)
 GET {{user}}
+Authorization: Bearer {{tokenProf}}
 
-###
-# --- OK ---
+### Obtener solo estudiantes
 GET {{user}}/students
+Authorization: Bearer {{tokenProf}}
 
-###
-# --- OK ---
+### Actualizar un usuario (reemplazar el :id por uno real)
 PUT {{user}}/1
+Authorization: Bearer {{tokenProf}}
 Content-Type: application/json
 
 {
     "name": "Jorge Actualizado"
 }
 
-###
-# --- OK ---
+### Eliminar un usuario (soft delete, reemplazar el :id)
 DELETE {{user}}/2
-
+Authorization: Bearer {{tokenProf}}
 
 #==========================
 #       TEST MATERIAS
 #==========================
 
-### Crear materia
-# --- OK ---
+### Crear materia SIN token -> esperado 401
 POST {{subject}}
+Content-Type: application/json
+
+{
+    "name": "Materia sin token"
+}
+
+### Crear materia con token de ALUMNO -> esperado 403
+POST {{subject}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzg3NzAxMjQ3LCJleHAiOjE3ODc3MDQ4NDd9.vnIgxZOeX1-DxoZvu-k2jf1JQwBfZ0yhGMA1uTlkOto
+Content-Type: application/json
+
+{
+    "name": "Materia con alumno"
+}
+
+### Crear materia con token de PROFESOR -> esperado 201
+# Reemplazar professor_id por el id real devuelto en el registro del profesor
+POST {{subject}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 Content-Type: application/json
 
 {
     "name": "Organizacion y Arquitectura II",
     "description": "Funcionamiento interno de procesadores, cache y ram",
-    "professor_id": 7
+    "professor_id": 11
 }
 
-### Obtener todas las materias
-# --- OK ---
+### Obtener todas las materias (cualquier logueado)
 GET {{subject}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsInJvbGUiOiJTVFVERU5UIiwiaWF0IjoxNzg3NzAxMjQ3LCJleHAiOjE3ODc3MDQ4NDd9.vnIgxZOeX1-DxoZvu-k2jf1JQwBfZ0yhGMA1uTlkOto
 
-### Actualizar materia
-# --- OK ---
+### Actualizar materia (solo profesor)
 PUT {{subject}}/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 Content-Type: application/json
 
 {
@@ -77,45 +128,37 @@ Content-Type: application/json
     "description": "Cálculo integral y diferencial"
 }
 
-### Eliminar materia
-# --- OK ---
+### Eliminar materia (solo profesor)
 DELETE {{subject}}/1
-
-### Crear nueva materia
-# --- OK ---
-POST {{subject}}
-Content-Type: application/json
-
-{
-    "name": "Física",
-    "description": "Mecánica y termodinámica",
-    "professor_id": 7
-}
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MDExNTgsImV4cCI6MTc4NzcwNDc1OH0.Y77DTzSlJ0mvPGHctlPXVT-dDKCfY6ILnb2_VJxJPL0
 
 #======================================
-#   TEST RELACIONES
-# profesor-materia-alumno
+#   TEST RELACIONES profesor-materia-alumno
 #======================================
 
-### Obtener materias de un profesor específico
-# --- OK ---
+### Materias de un profesor específico
 GET {{subject}}/professor/1
+Authorization: Bearer {{tokenProf}}
 
-### Obtener profesor de una materia específica
-# --- OK ---
+### Profesor de una materia específica
 GET {{subject}}/1/professor
+Authorization: Bearer {{tokenProf}}
 
-### Obtener materias de un alumno específico
-# --- OK ---
-GET {{subject}}/student/3
+### Materias de un alumno específico
+GET {{subject}}/student/2
+Authorization: Bearer {{tokenAlu}}
 
-### Obtener materia completa (con profesor y estudiantes inscriptos)
-# --- PENDIENTE: requiere implementar ---
+### Materia completa (con profesor y estudiantes inscriptos)
 GET {{subject}}/1/full
+Authorization: Bearer {{tokenProf}}
 
-### Inscribir alumno en materia (necesitarás esta ruta también)
-POST http://localhost:3000/api/enrollments
+#==========================
+#       TEST ENROLLMENTS
+#==========================
+
+### Inscribir alumno en materia
+# Reemplazar student_id/subject_id por ids reales
+POST {{enrollment}}
 Content-Type: application/json
 
 {
@@ -123,56 +166,20 @@ Content-Type: application/json
     "subject_id": 1
 }
 
-export const getStudentsBySubjectService = async (subject_id) => {
-  // Verificar que la materia existe
-  const subjectResult = await query(
-    `SELECT id FROM subjects WHERE id = $1 AND deleted_at IS NULL`,
-    [subject_id]
-  );
-
-  if (subjectResult.rows.length === 0) {
-    return [];
-  }
-
-  const result = await query(
-    `SELECT e.id as enrollment_id, e.grade, e.created_at as enrolled_at,
-            u.id, u.name, u.email, u.role
-     FROM enrollments e
-     INNER JOIN users u ON e.student_id = u.id AND u.deleted_at IS NULL
-     WHERE e.subject_id = $1 AND e.deleted_at IS NULL`,
-    [subject_id]
-  );
-
-  return result.rows;
-};
-
-#==========================
-#       TEST ENROLLMENTS
-#==========================
-
-### Inscribir alumno en materia
-POST {{url}}/api/enrollments
-Content-Type: application/json
-
-{
-    "student_id": 3,
-    "subject_id": 1
-}
-
 ### Obtener todas las inscripciones
-GET {{url}}/api/enrollments
+GET {{enrollment}}
 
 ### Obtener inscripción específica
-GET {{url}}/api/enrollments/1
+GET {{enrollment}}/1
 
 ### Obtener inscripciones de un alumno
-GET {{url}}/api/enrollments/student/2
+GET {{enrollment}}/student/2
 
 ### Obtener inscripciones de una materia
-GET {{url}}/api/enrollments/subject/1
+GET {{enrollment}}/subject/1
 
 ### Actualizar nota de una inscripción
-PUT {{url}}/api/enrollments/1
+PUT {{enrollment}}/1
 Content-Type: application/json
 
 {
@@ -180,4 +187,4 @@ Content-Type: application/json
 }
 
 ### Eliminar inscripción (soft delete)
-DELETE {{url}}/api/enrollments/1
+DELETE {{enrollment}}/1
