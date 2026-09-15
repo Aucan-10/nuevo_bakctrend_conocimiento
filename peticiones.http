@@ -29,10 +29,10 @@ POST {{url}}/auth/register
 Content-Type: application/json
 
 {
-    "name": "Profesor Test",
-    "email": "proasf@test.com",
+    "name": "admin",
+    "email": "admin@gmail.com",
     "password": "1234",
-    "role": "STUDENT"
+    "role": "PROFESSOR"
 }
 
 ### Registrar un alumno
