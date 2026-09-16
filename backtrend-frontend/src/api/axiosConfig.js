@@ -1,14 +1,14 @@
 import axios from "axios";
 
-// CAMBIA ESTO: Fuerza el uso de tu backend local que acabas de arreglar
-const API_URL = "http://localhost:3000";
-// const API_URL = 'https://nuevo-bakctrend-conocimiento.vercel.app'; // Déjalo comentado
+// ✅ URL DE PRODUCCIÓN (La de tu backend en Vercel)
+const API_URL = "https://nuevo-bakctrend-conocimiento.vercel.app";
+
+// ❌ COMENTA LA LOCAL
+// const API_URL = 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 api.interceptors.request.use(
