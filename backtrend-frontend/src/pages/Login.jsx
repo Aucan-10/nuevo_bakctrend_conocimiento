@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
 
@@ -99,6 +99,15 @@ const Login = () => {
             {loading ? "Iniciando..." : "Iniciar Sesión"}
           </button>
         </form>
+      </div>
+      <div className="mt-4 text-center text-sm">
+        <span className="text-gray-600">¿No tienes cuenta? </span>
+        <Link
+          to="/register"
+          className="text-blue-600 hover:underline font-bold"
+        >
+          Regístrate aquí
+        </Link>
       </div>
     </div>
   );
