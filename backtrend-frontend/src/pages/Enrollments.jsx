@@ -2,7 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
-
+const fetchEnrollments = async () => {
+  try {
+    const res = await api.get("/api/enrollments");
+    setEnrollments(res.data);
+  } catch (err) {
+    console.error("Error al cargar inscripciones (Backend falló):", err);
+    setEnrollments([]); // Deja la lista vacía en lugar de romper la app
+  } finally {
+    setLoading(false);
+  }
+};
 const Enrollments = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);

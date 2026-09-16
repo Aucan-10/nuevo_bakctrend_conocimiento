@@ -59,18 +59,19 @@ export const getAllEnrollmentsService = async () => {
       student_id,
       subject_id,
       grade,
-      created_at,
-      updated_at,
-      users:student_id(id, name, email),
-      subjects:subject_id(id, name, description)
+      created_at
     `
     )
     .is("deleted_at", null)
     .order("id", { ascending: true });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("❌ ERROR DE SUPABASE EN getAllEnrollments:", error);
+    throw new Error(error.message);
+  }
 
-  return data;
+  // Devuelve un array vacío si data es null para evitar errores en el frontend
+  return data || [];
 };
 
 export const getEnrollmentByIdService = async (id) => {

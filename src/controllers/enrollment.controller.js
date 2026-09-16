@@ -7,7 +7,15 @@ import {
   updateEnrollmentService,
   deleteEnrollmentService,
 } from "../services/enrollment.service.js";
-
+export const getAllEnrollments = async (req, res) => {
+  try {
+    const enrollments = await getAllEnrollmentsService();
+    res.status(200).json(enrollments);
+  } catch (error) {
+    console.error("❌ ERROR EN getAllEnrollments:", error); // ← AGREGA ESTA LÍNEA
+    res.status(500).json({ message: error.message });
+  }
+};
 export const createEnrollment = async (req, res) => {
   try {
     const { student_id, subject_id } = req.body;
@@ -36,15 +44,6 @@ export const createEnrollment = async (req, res) => {
     if (error.message === "Student already enrolled") {
       return res.status(409).json({ message: error.message });
     }
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const getAllEnrollments = async (req, res) => {
-  try {
-    const enrollments = await getAllEnrollmentsService();
-    res.status(200).json(enrollments);
-  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
