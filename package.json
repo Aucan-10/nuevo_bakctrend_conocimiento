@@ -1,5 +1,5 @@
 {
-  "name": "backtrend",
+  "name": "backtrend-backend",
   "version": "1.0.0",
   "description": "hacer un back sin morir en el intento y sin IA",
   "main": "src/index.js",
@@ -20,7 +20,12 @@
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   },
-  "pnpm": { "onlyBuiltDependencies": ["bcrypt", "@scarf/scarf"] },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "@scarf/scarf"
+    ]
+  },
   "author": "Aucan",
   "license": "ISC"
 }
