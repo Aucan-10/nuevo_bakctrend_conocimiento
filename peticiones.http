@@ -29,9 +29,9 @@ POST {{url}}/auth/register
 Content-Type: application/json
 
 {
-    "name": "admin",
-    "email": "admin@gmail.com",
-    "password": "1234",
+    "name": "Cristian Alarcon",
+    "email": "cristianalarcon2@gmail.com",
+    "password": "cristianalarcon",
     "role": "PROFESSOR"
 }
 
@@ -41,8 +41,8 @@ POST {{url}}/auth/register
 Content-Type: application/json
 
 {
-    "name": "Aluss Test",
-    "email": "aluMssN@test.com",
+    "name": "Nicolas Badenes",
+    "email": "nicolasbadenes@gmail.com",
     "password": "1234"
 }
 
@@ -160,12 +160,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInJvbGUiO
 # Reemplazar student_id/subject_id por ids reales
 ### Inscribir alumno en materia (solo profesor)
 POST {{enrollment}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODc3MTk3NTYsImV4cCI6MTc4NzcyMzM1Nn0.V24HwsVaL4WGy8dsiKppVxwmWwYuuuExC8Z_cwxogYs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsInJvbGUiOiJQUk9GRVNTT1IiLCJpYXQiOjE3ODk1MTEyODcsImV4cCI6MTc4OTUxNDg4N30.-iev5SJVUVm5nivfJgCsUAYwxTNU53qqKHVHosY9WCc
 Content-Type: application/json
 
 {
-    "student_id": 14,
-    "subject_id": 6
+    "student_id": 23,
+    "subject_id": 7
 }
 
 ### Obtener todas las inscripciones
